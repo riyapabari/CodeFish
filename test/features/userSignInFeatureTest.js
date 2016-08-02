@@ -5,41 +5,12 @@
 // var mongoose = require('mongoose');
 // var User = mongoose.model('User');
 // var expect = require('chai').expect;
-// var browser;
+// var browser = new Browser({ site: "http://localhost:3001"});
 //
 //
 // describe('User visits login page', function() {
 //
-//   beforeEach(function(done) {
-//     server.listen(3001);
-//     browser = new Browser({ site: "http://localhost:3001"});
-//     browser.visit('/sessions/new', done);
-//   });
-//
-//   afterEach(function(done) {
-//     mongoose.connection.db.dropDatabase().then(function() {
-//       server.close();
-//     }).then(done, done);
-//   });
-//
-//
 //   describe("User cannot Sign in with the wrong password", function(){
-//
-//     beforeEach(function(done){
-//       var newUser = new User({
-//         username: "hello",
-//         email: "hello@hello.com",
-//         password: "fish"
-//       });
-//       newUser.save();
-//
-//
-//       browser.fill('username', 'hello');
-//       browser.fill('password', 'hello');
-//       browser.pressButton('Sign In', done);
-//     });
-//
-//
 //
 //     it('error of invalid password', function(){
 //       expect(browser.text()).to.contain('Invalid password');

@@ -1,18 +1,16 @@
 process.env.NODE_ENV = 'test';
-var app = require('../../app').listen(3001);
+// var app = require('../../app').listen(3001);
 var User = require('../../models/user');
 var Browser = require('zombie');
 var mongoose = require('mongoose');
 var expect = require('chai').expect;
-
-var browser, browser2;
-
+var browser = new Browser({ site: "http://localhost:3001"});
+var browser2 = new Browser({ site: "http://localhost:3001"});
 
 describe('Chat features', function() {
 
   before(function(done) {
-    browser = new Browser({ site: "http://localhost:3001"});
-    browser.visit('/', function() {
+    this.timeout(10000);
     browser.visit('/users/new', function() {
       browser.fill('username', 'testusername');
       browser.fill('email', 'test@email.com');
@@ -25,15 +23,15 @@ describe('Chat features', function() {
           browser.pressButton('Sign In', function(){
             done();
           });
-          });
         });
       });
     });
   });
-  //
-  // afterEach(function(done) {
-  //   mongoose.connection.db.dropDatabase(done);
-  // });
+
+  after(function(done) {
+    mongoose.connection.db.dropDatabase();
+    done();
+  });
 
   describe('can click ask for help',function() {
     //
@@ -48,25 +46,21 @@ describe('Chat features', function() {
     });
   });
 
-  describe('argh', function() {
+  describe('getting help', function() {
 
-    before(function(done){
+    it('can fill in issue and go to wait page', function(done){
       browser.fill('description', 'Ruby help');
-      browser.pressButton('Submit', done);
-    });
-
-
-    it('can fill in issue and go to wait page', function(){
-      browser.assert.text('#loading-image-text', 'Waiting for a Code Coach to respond to your request...');
+      browser.pressButton('Submit', function() {
+        browser.assert.text('#loading-image-text', 'Waiting for a Code Coach to respond to your request...');
+        done();
+      });
     });
 
     it('second user can see the chat room', function(done) {
-          var browser2 = new Browser({ site: "http://localhost:3001"});
-          browser2.visit('/', function() {
-            console.log(browser2.html());
-            browser2.assert.text('#loading-image-text', 'Ruby help');
-            done();
-          });
+      browser2.visit('/', function() {
+        browser2.assert.text('#join-rooms', 'Topic: Ruby help');
+        done();
+      });
     });
   });
 
